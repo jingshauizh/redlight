@@ -6,13 +6,35 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/camera_view_start"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="100dp"
         android:layout_marginLeft="30dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="30dp"
 
-        android:text="开始识别红绿灯"
-     />
+        android:text="开始识别红绿灯" />
+
+    <Button
+        android:id="@+id/red_audio_test"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/camera_view_start"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="30dp"
+
+        android:text="红灯语音测试" />
+
+    <Button
+        android:id="@+id/green_audio_test"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/red_audio_test"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="30dp"
+
+        android:text="绿灯语音测试" />
 
 </RelativeLayout>
