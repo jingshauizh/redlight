@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenCV</string>
+    <string name="blur_radius">高斯模糊半径</string>
+    <string name="exposure">曝光补偿</string>
+    <string name="color_area_min_radius">检测区域最小半径</string>
+    <string name="color_area_max_radius">检测区域最大半径</string>
+    <string name="red_sensitivity">红灯敏感范围</string>
+    <string name="green_sensitivity">绿灯敏感范围</string>
+    <string name="yellow_sensitivity">黄灯敏感范围</string>
+    <string name="show_ignored_rect">显示被过滤的区域</string>
+</resources>
