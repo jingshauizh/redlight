@@ -35,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
                     if(player.isPlaying()){
                         player.stop();
                         player.release();
-                        player = new MediaPlayer();
+
                     }
+                    player = new MediaPlayer();
                     AssetFileDescriptor fileDescriptor = assetManager.openFd("red.mp3");
                     player.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getStartOffset());
                     player.prepare();
@@ -59,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
                     if(player.isPlaying()){
                         player.stop();
                         player.release();
-                        player = new MediaPlayer();
+
                     }
+                    player = new MediaPlayer();
                     AssetFileDescriptor fileDescriptor = assetManager.openFd("green.mp3");
                     player.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getStartOffset());
                     player.prepare();

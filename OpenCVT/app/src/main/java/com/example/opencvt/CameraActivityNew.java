@@ -1,7 +1,11 @@
 package com.example.opencvt;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -29,6 +33,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -41,10 +46,11 @@ public class CameraActivityNew extends AppCompatActivity {
     private int mBlurRadius;
     private int mMinDetectRadius;
     private int mMaxDetectRadius;
-
+    AssetManager assetManager;
+    MediaPlayer player = null;
 
     CVLightData cvlightdata = new CVLightData();
-    int lightType = 1001;
+    int lightType = 1003;
     private SimpleCvCameraViewListener2 mCameraViewListener = new SimpleCvCameraViewListener2() {
 
         @Override
@@ -84,10 +90,10 @@ public class CameraActivityNew extends AppCompatActivity {
 //            findAndDrawContours(blurredFrame, yellow, new Scalar(255, 255, 0, 255), "Yellow");
 //
             cvlightdata = new CVLightData();
-            findAndDrawContoursRed(red,cvlightdata);
-            findAndDrawContoursGreen(green,cvlightdata);
+            findAndDrawContoursRed(red, cvlightdata);
+            findAndDrawContoursGreen(green, cvlightdata);
             lightType = cvlightdata.checkLightType();
-            Log.d(TAG, "contours.size() lightType=" +lightType);
+            Log.d(TAG, "contours.size() lightType=" + lightType);
             return blurredFrame;
         }
 
@@ -116,7 +122,7 @@ public class CameraActivityNew extends AppCompatActivity {
     private void findAndDrawContours(Mat cameraFrame, Mat rangedAndDilatedMat, Scalar drawColor, String text) {
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(rangedAndDilatedMat, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        Log.d(TAG, "contours.size(): " +text +" "+ contours.size());
+        Log.d(TAG, "contours.size(): " + text + " " + contours.size());
         for (MatOfPoint contour : contours) {
             MatOfPoint2f approxCurve = new MatOfPoint2f();
             MatOfPoint2f contour2f = new MatOfPoint2f(contour.toArray());
@@ -138,16 +144,16 @@ public class CameraActivityNew extends AppCompatActivity {
     private void findAndDrawContoursRed(Mat rangedAndDilatedMat, CVLightData cvlightdata) {
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(rangedAndDilatedMat, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        Log.d(TAG, "contours.size(): "  +" "+ contours.size());
-        cvlightdata.setRedCount( contours.size());
+        Log.d(TAG, "contours.size(): " + " " + contours.size());
+        cvlightdata.setRedCount(contours.size());
 
     }
 
     private void findAndDrawContoursGreen(Mat rangedAndDilatedMat, CVLightData cvlightdata) {
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(rangedAndDilatedMat, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        Log.d(TAG, "contours.size(): "  +" "+ contours.size());
-        cvlightdata.setGreenCount( contours.size());
+        Log.d(TAG, "contours.size(): " + " " + contours.size());
+        cvlightdata.setGreenCount(contours.size());
 
     }
 
@@ -239,6 +245,8 @@ public class CameraActivityNew extends AppCompatActivity {
         Utils.matToBitmap(mat, bitmap);
         Log.d(TAG, "" + bitmap);
     }
+
+    private Handler uiHandler = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -344,6 +352,93 @@ public class CameraActivityNew extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+
+        player = new MediaPlayer();
+        assetManager = getResources().getAssets();
+        uiHandler = new Handler();
+        uiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkAndPlayAudio();
+            }
+        },5000);
+
+    }
+
+    private void checkAndPlayAudio() {
+        Log.i("checkAndPlayAudio", "lightType = "+lightType);
+        if (lightType == CVLightData.CV_STATUS_RED) {
+            lightType = CVLightData.CV_STATUS_No_light;
+            playRedAudio();
+
+        } else if (lightType == CVLightData.CV_STATUS_GREEN) {
+            lightType = CVLightData.CV_STATUS_No_light;
+            playGreenAudio();
+
+        }
+        else{
+
+            try {
+                if(null != player){
+                    player.release();
+                    player = null;
+                }
+
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        uiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkAndPlayAudio();
+            }
+        },5000);
+    }
+
+    private void playRedAudio() {
+        Log.i("checkAndPlayAudio", "playRedAudio = "+lightType);
+        try {
+            if(null != player){
+                if (player.isPlaying()) {
+                    player.stop();
+                }
+                player.release();
+                player = null;
+            }
+            player = new MediaPlayer();
+            AssetFileDescriptor fileDescriptor = assetManager.openFd("red.mp3");
+            player.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getLength());
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void playGreenAudio() {
+        Log.i("checkAndPlayAudio", "playGreenAudio = "+lightType);
+        try {
+            if(null != player){
+                if (player.isPlaying()) {
+                    player.stop();
+                }
+                player.release();
+                player = null;
+            }
+            player = new MediaPlayer();
+            AssetFileDescriptor fileDescriptor = assetManager.openFd("green.mp3");
+            player.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getLength());
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
