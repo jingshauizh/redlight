@@ -3,6 +3,15 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.3"
+
+    signingConfigs {
+        redappkey {
+            storeFile file('redlightkey.jks')
+            storePassword '461670'
+            keyAlias = 'redlightkey'
+            keyPassword '461670'
+        }
+    }
     defaultConfig {
         applicationId "com.example.opencvt"
         minSdkVersion 21
@@ -15,6 +24,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.redappkey
         }
     }
     compileOptions {

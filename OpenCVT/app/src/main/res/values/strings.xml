@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OpenCV</string>
+    <string name="app_name">RedLight</string>
     <string name="blur_radius">高斯模糊半径</string>
     <string name="exposure">曝光补偿</string>
     <string name="color_area_min_radius">检测区域最小半径</string>
